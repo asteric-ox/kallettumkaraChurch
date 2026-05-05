@@ -4,6 +4,16 @@ import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
+// Get all approved bookings (Public)
+router.get('/public', async (req, res) => {
+  try {
+    const bookings = await HallBooking.find({ status: 'Approved' }).sort({ booking_date: 1 });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching availability' });
+  }
+});
+
 // Get all bookings (Admin only)
 router.get('/', authMiddleware, async (req, res) => {
   try {

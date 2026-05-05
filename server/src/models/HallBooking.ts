@@ -6,7 +6,9 @@ export interface IHallBooking extends Document {
   email: string;
   event_type: string;
   booking_date: Date;
-  time_slot: 'Morning' | 'Afternoon' | 'Full Day';
+  start_time: string; // e.g., "10:00 AM"
+  end_time: string;   // e.g., "04:00 PM"
+  time_slot: 'Morning' | 'Afternoon' | 'Full Day' | 'Custom';
   status: 'Pending' | 'Approved' | 'Declined';
   additional_info?: string;
   created_at: Date;
@@ -18,9 +20,11 @@ const HallBookingSchema: Schema = new Schema({
   email: { type: String },
   event_type: { type: String, required: true },
   booking_date: { type: Date, required: true },
+  start_time: { type: String, required: true },
+  end_time: { type: String, required: true },
   time_slot: { 
     type: String, 
-    enum: ['Morning', 'Afternoon', 'Full Day'], 
+    enum: ['Morning', 'Afternoon', 'Full Day', 'Custom'], 
     default: 'Full Day' 
   },
   status: { 
