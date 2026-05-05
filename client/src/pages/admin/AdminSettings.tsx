@@ -1,7 +1,7 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
 export default function AdminSettings() {
-  const [settings, setSettings] = useState({maintenance_mode:false,maintenance_message:""});
+  const [settings, setSettings] = useState({maintenance_mode:false,maintenance_message:"", hall_booking_enabled: true});
   const [msg, setMsg] = useState("");
   useEffect(()=>{ api.get("/settings").then(r=>setSettings(r.data)); },[]);
   const save = async (e:React.FormEvent) => {
@@ -26,6 +26,16 @@ export default function AdminSettings() {
           </div>
         )}
         <button type="submit" className="btn-gold" style={{alignSelf:"flex-start",padding:"0.75rem 2rem"}}>Save Settings</button>
+      </form>
+
+      <form onSubmit={save} className="glass-card" style={{padding:"2rem",borderRadius:"1rem",display:"flex",flexDirection:"column",gap:"1.5rem", marginTop:"2rem"}}>
+        <h2 className="font-heading" style={{fontSize:"1.25rem",fontWeight:700,color:"var(--gold-400)"}}>Feature Visibility</h2>
+        <div style={{display:"flex",alignItems:"center",gap:"1rem"}}>
+          <input type="checkbox" id="hall_booking" checked={settings.hall_booking_enabled} onChange={e=>setSettings({...settings,hall_booking_enabled:e.target.checked})} style={{width:20,height:20,accentColor:"var(--gold-500)"}}/>
+          <label htmlFor="hall_booking" style={{color:"#d1d5db",fontSize:"1rem"}}>Show Parish Hall Booking Area</label>
+        </div>
+        <p style={{fontSize:"0.8rem", color:"#6b7280"}}>If unchecked, parishioners will not be able to see or use the hall booking form.</p>
+        <button type="submit" className="btn-gold" style={{alignSelf:"flex-start",padding:"0.75rem 2rem"}}>Save Visibility</button>
       </form>
     </div>
   );

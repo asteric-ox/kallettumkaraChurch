@@ -8,7 +8,7 @@ const router = Router();
 router.get('/', async (_req: Request, res: Response): Promise<void> => {
   try {
     const settings = await SiteSettings.findOne({ key: 'general' });
-    res.json(settings || { maintenance_mode: false, maintenance_message: '' });
+    res.json(settings || { maintenance_mode: false, maintenance_message: '', hall_booking_enabled: true });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err });
   }
@@ -17,10 +17,10 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
 // PUT /api/settings/maintenance (admin)
 router.put('/maintenance', authMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { maintenance_mode, maintenance_message } = req.body;
+    const { maintenance_mode, maintenance_message, hall_booking_enabled } = req.body;
     const settings = await SiteSettings.findOneAndUpdate(
       { key: 'general' },
-      { maintenance_mode, maintenance_message, updated_at: new Date() },
+      { maintenance_mode, maintenance_message, hall_booking_enabled, updated_at: new Date() },
       { new: true, upsert: true }
     );
     res.json(settings);
