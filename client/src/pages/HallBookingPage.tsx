@@ -22,6 +22,7 @@ export default function HallBookingPage() {
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState({ hall_booking_enabled: true });
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   // Calendar State
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -29,6 +30,8 @@ export default function HallBookingPage() {
   useEffect(() => {
     fetchBookings();
     fetchSettings();
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const fetchSettings = async () => {
@@ -54,6 +57,15 @@ export default function HallBookingPage() {
     if (slot === 'Morning') { start = '08:00 AM'; end = '12:00 PM'; }
     else if (slot === 'Afternoon') { start = '01:00 PM'; end = '06:00 PM'; }
     setFormData({ ...formData, time_slot: slot, start_time: start, end_time: end });
+  };
+
+  const selectDateFromCalendar = (date: Date) => {
+    if (settings.hall_booking_enabled) {
+      // Format to YYYY-MM-DD for input
+      const formatted = date.toISOString().split('T')[0];
+      setFormData({ ...formData, booking_date: formatted });
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,6 +98,13 @@ export default function HallBookingPage() {
 
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), d));
+
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.getDate() === today.getDate() && 
+           date.getMonth() === today.getMonth() && 
+           date.getFullYear() === today.getFullYear();
+  };
 
   return (
     <>
@@ -121,7 +140,7 @@ export default function HallBookingPage() {
             </div>
 
             {/* Right Side: Booking Form */}
-            <div className="glass-card animate-fade-in-up-delay" style={{ padding: '3rem', borderRadius: '2rem', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', border: '1px solid rgba(212,175,55,0.15)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div id="booking-form" className="glass-card animate-fade-in-up-delay" style={{ padding: '3rem', borderRadius: '2rem', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', border: '1px solid rgba(212,175,55,0.15)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {settings.hall_booking_enabled ? (
                 <>
                   <h3 className="font-heading" style={{ fontSize: '1.75rem', color: 'var(--gold-400)', marginBottom: '2rem' }}>Reserve Your Date</h3>
@@ -201,7 +220,12 @@ export default function HallBookingPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
               <div>
                 <h2 className="font-heading" style={{ fontSize: '2.5rem', color: '#fff', letterSpacing: '-0.02em' }}>Availability Calendar</h2>
-                <p style={{ color: '#6b7280', fontSize: '1rem', marginTop: '0.5rem' }}>View upcoming celebrations and open dates.</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                  <span style={{ color: '#6b7280', fontSize: '1rem' }}>Current Time:</span>
+                  <span style={{ color: 'var(--gold-400)', fontWeight: 600, fontSize: '1rem', background: 'rgba(212,175,55,0.1)', padding: '0.25rem 0.75rem', borderRadius: '9999px' }}>
+                    {currentTime.toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
               <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '0.75rem 1.5rem', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} className="premium-nav-btn" aria-label="Previous Month">
@@ -228,36 +252,45 @@ export default function HallBookingPage() {
                          bDate.getFullYear() === date.getFullYear();
                 }) : null;
 
+                const active = date && isToday(date);
+
                 return (
-                  <div key={idx} style={{ 
-                    minHeight: '140px',
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    padding: '1rem',
-                    borderRadius: '1.5rem',
-                    background: booking ? 'rgba(212,175,55,0.08)' : date ? 'rgba(255,255,255,0.02)' : 'transparent',
-                    border: booking ? '1px solid rgba(212,175,55,0.3)' : date ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    position: 'relative',
-                    cursor: date ? 'default' : 'initial'
-                  }}>
+                  <div key={idx} 
+                    onClick={() => date && selectDateFromCalendar(date)}
+                    style={{ 
+                      minHeight: '140px',
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      padding: '1rem',
+                      borderRadius: '1.5rem',
+                      background: booking ? 'rgba(212,175,55,0.08)' : active ? 'rgba(212,175,55,0.15)' : date ? 'rgba(255,255,255,0.02)' : 'transparent',
+                      border: booking ? '1px solid rgba(212,175,55,0.3)' : active ? '1px solid var(--gold-500)' : date ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      position: 'relative',
+                      cursor: date ? 'pointer' : 'initial',
+                      transform: active ? 'scale(1.02)' : 'none',
+                      boxShadow: active ? '0 10px 20px rgba(212,175,55,0.1)' : 'none'
+                    }}
+                  >
                     {date && (
                       <>
-                        <span style={{ 
-                          color: booking ? 'var(--gold-400)' : '#4b5563', 
-                          fontWeight: 800, 
-                          fontSize: '1.1rem',
-                          marginBottom: 'auto'
-                        }}>
-                          {date.getDate()}
-                        </span>
+                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+                          <span style={{ 
+                            color: booking ? 'var(--gold-400)' : active ? 'var(--gold-300)' : '#4b5563', 
+                            fontWeight: 800, 
+                            fontSize: '1.1rem'
+                          }}>
+                            {date.getDate()}
+                          </span>
+                          {active && <span style={{ fontSize:'0.5rem', background:'var(--gold-600)', color:'#000', padding:'2px 6px', borderRadius:'4px', fontWeight:800 }}>TODAY</span>}
+                        </div>
                         
                         {booking && (
                           <div className="animate-fade-in" style={{ 
                             background: 'rgba(212,175,55,0.15)', 
                             padding: '0.75rem', 
                             borderRadius: '0.75rem',
-                            marginTop: '0.5rem',
+                            marginTop: 'auto',
                             border: '1px solid rgba(212,175,55,0.2)'
                           }}>
                             <p style={{ color: 'var(--gold-400)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.02em' }}>
@@ -266,6 +299,11 @@ export default function HallBookingPage() {
                             <p style={{ color: '#9ca3af', fontSize: '0.65rem', fontWeight: 500 }}>
                               {booking.start_time} - {booking.end_time}
                             </p>
+                          </div>
+                        )}
+                        {!booking && date && (
+                          <div style={{ marginTop:'auto', opacity:0, transition:'opacity 0.3s' }} className="hover-show">
+                            <span style={{ fontSize:'0.65rem', color:'var(--gold-500)', fontWeight:600 }}>+ REQUEST</span>
                           </div>
                         )}
                       </>
@@ -307,9 +345,9 @@ export default function HallBookingPage() {
           border-color: transparent;
         }
 
-        .premium-nav-btn:active {
-          transform: translateY(0);
-        }
+        .hover-show { opacity: 0; }
+        [style*="cursor: pointer"]:hover .hover-show { opacity: 1; }
+        [style*="cursor: pointer"]:hover { background: rgba(255,255,255,0.05) !important; border-color: rgba(212,175,55,0.4) !important; }
       `}</style>
     </>
   );
