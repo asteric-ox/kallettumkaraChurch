@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../services/api';
 import type { Announcement, ParishCouncilMember, Trustee, MassTiming } from '../types';
 import PriestModal from '../components/PriestModal';
