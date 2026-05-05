@@ -221,7 +221,11 @@ export default function HallBookingPage() {
                 </div>
                 <div style={{ background: 'rgba(212,175,55,0.1)', padding: '1.25rem', borderRadius: '1rem', border: '1px solid rgba(212,175,55,0.2)' }}>
                   <p style={{ color: 'var(--gold-400)', fontSize: '0.75rem', textTransform: 'uppercase' }}>Reserved Time</p>
-                  <p style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700 }}>{selectedBooking.start_time} - {selectedBooking.end_time}</p>
+                  <p style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700 }}>
+                    {selectedBooking.start_time && selectedBooking.end_time 
+                      ? `${selectedBooking.start_time} - ${selectedBooking.end_time}` 
+                      : (selectedBooking as any).time_slot || 'Full Day'}
+                  </p>
                 </div>
               </div>
               <button onClick={() => setSelectedBooking(null)} className="btn-gold" style={{ marginTop: '2.5rem', width: '100%', padding: '1rem' }}>Close Details</button>

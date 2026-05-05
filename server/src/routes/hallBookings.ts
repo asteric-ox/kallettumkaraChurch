@@ -44,7 +44,7 @@ router.get('/check-availability', async (req, res) => {
 // Submit a new booking request (Public)
 router.post('/', async (req, res) => {
   try {
-    const { name, phone, email, event_type, booking_date, time_slot, additional_info } = req.body;
+    const { name, phone, email, event_type, booking_date, time_slot, start_time, end_time, additional_info } = req.body;
     
     const newBooking = new HallBooking({
       name,
@@ -53,6 +53,8 @@ router.post('/', async (req, res) => {
       event_type,
       booking_date,
       time_slot,
+      start_time,
+      end_time,
       additional_info
     });
 
