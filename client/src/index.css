@@ -1,0 +1,288 @@
+/* ══════════════════════════════════════════════════════════════
+   Infant Jesus Church – Global Styles (MERN Edition)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ──────────────────────────────────────────── */
+:root {
+  --church-bg: #0f0a07;
+  --church-card: #1a1410;
+  --church-accent: #2a1f15;
+  --gold-400: #e8be2a;
+  --gold-500: #d4af37;
+  --gold-600: #b08a18;
+  --gold-700: #8a6716;
+  --maroon-700: #800000;
+  --maroon-800: #6b0000;
+  --maroon-900: #4a0000;
+  --maroon-950: #2d0000;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Reset / Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--church-bg);
+  color: #e5e7eb;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0f0a07; }
+::-webkit-scrollbar-thumb { background: #2a1f15; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a2f20; }
+
+/* ── Selection ─────────────────────────────────────────────── */
+::selection { background: rgba(212,175,55,0.3); color: #fff; }
+
+/* ── Typography ─────────────────────────────────────────────── */
+.font-heading { font-family: var(--font-heading); }
+.font-body    { font-family: var(--font-body); }
+
+/* ── Nav Links ─────────────────────────────────────────────── */
+.nav-link {
+  position: relative;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #d1d5db;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+.nav-link:hover { color: var(--gold-400); }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  width: 0; height: 2px;
+  background: linear-gradient(to right, var(--gold-500), var(--gold-600));
+  transition: width 0.3s, left 0.3s;
+}
+.nav-link:hover::after { width: 60%; left: 20%; }
+.nav-link.active { color: var(--gold-400); }
+.nav-link.active::after { width: 60%; left: 20%; }
+
+.mobile-nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #d1d5db;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.mobile-nav-link:hover, .mobile-nav-link.active { background: rgba(212,175,55,0.05); color: var(--gold-400); }
+
+/* ── Nav Scroll State ──────────────────────────────────────── */
+.nav-transparent { background: transparent; }
+.nav-scrolled {
+  background: rgba(15,10,7,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212,175,55,0.1);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+
+/* ── Glass Card ────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(26,20,16,0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212,175,55,0.08);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover {
+  border-color: rgba(212,175,55,0.18);
+  box-shadow: 0 8px 40px rgba(212,175,55,0.05);
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.hero-pattern {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(128,0,0,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(212,175,55,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(128,0,0,0.1) 0%, transparent 50%);
+}
+.parallax-bg {
+  background-image:
+    linear-gradient(to bottom, rgba(15,10,7,0.4), rgba(15,10,7,0.9)),
+    url('/uploads/Alter.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* ── Marquee ───────────────────────────────────────────────── */
+.marquee-track { animation: marquee 30s linear infinite; }
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Form Inputs ───────────────────────────────────────────── */
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(15,10,7,0.8);
+  border: 1px solid rgba(212,175,55,0.15);
+  border-radius: 0.75rem;
+  color: #fff;
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: rgba(212,175,55,0.4);
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+}
+.form-input::placeholder { color: #4b5563; }
+select.form-input option { background: var(--church-card); color: #e5e7eb; }
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes bounce {
+  0%,100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50%      { transform: translateY(0);   animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+
+.animate-fade-in           { animation: fadeIn 0.8s ease-out both; }
+.animate-fade-in-up        { animation: fadeInUp 0.8s ease-out both; }
+.animate-fade-in-up-delay  { animation: fadeInUp 0.8s ease-out 0.2s both; }
+.animate-fade-in-up-delay-2{ animation: fadeInUp 0.8s ease-out 0.4s both; }
+.animate-zoom-in           { animation: zoomIn 1.2s cubic-bezier(0.16,1,0.3,1) both; }
+.animate-pulse             { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+.animate-spin              { animation: spin 1s linear infinite; }
+.animate-bounce            { animation: bounce 1s infinite; }
+
+/* ── Timeline ──────────────────────────────────────────────── */
+.timeline-entry {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.timeline-entry.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Priest Cards ──────────────────────────────────────────── */
+.priest-card {
+  width: 280px;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.priest-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(212,175,55,0.1);
+  border-color: rgba(212,175,55,0.25);
+}
+
+/* ── Trustee Cards ─────────────────────────────────────────── */
+.trustee-card {
+  width: 240px;
+  transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.trustee-card:hover {
+  transform: translateY(-5px) rotate(1deg);
+  box-shadow: 0 15px 35px rgba(212,175,55,0.1);
+  border-color: rgba(212,175,55,0.3);
+}
+
+/* ── Flash Messages ────────────────────────────────────────── */
+.flash-msg { animation: fadeInUp 0.4s ease-out both; }
+
+/* ── Preloader ─────────────────────────────────────────────── */
+#preloader {
+  background: rgba(15,10,7,0.97);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+#preloader.fade-out { opacity: 0; pointer-events: none; }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn-gold {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(to right, var(--gold-600), var(--gold-700));
+  color: var(--maroon-950);
+  border-radius: 0.75rem;
+  font-weight: 700; font-size: 0.875rem;
+  border: none; cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-gold:hover { background: linear-gradient(to right, var(--gold-500), var(--gold-600)); box-shadow: 0 8px 20px rgba(212,175,55,0.3); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid rgba(212,175,55,0.5);
+  color: var(--gold-400);
+  border-radius: 0.75rem;
+  font-weight: 600; font-size: 0.875rem;
+  background: transparent; cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-outline:hover { background: rgba(212,175,55,0.1); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #d1d5db;
+  border-radius: 0.75rem;
+  font-weight: 600; font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+/* ── Admin Panel ────────────────────────────────────────────── */
+.admin-sidebar {
+  background: var(--church-card);
+  border-right: 1px solid rgba(212,175,55,0.08);
+}
+.admin-nav-link {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem; font-weight: 500;
+  color: #9ca3af;
+  transition: all 0.2s;
+  text-decoration: none;
+  cursor: pointer;
+  border: none; background: transparent; width: 100%; text-align: left;
+}
+.admin-nav-link:hover, .admin-nav-link.active {
+  background: rgba(212,175,55,0.08);
+  color: var(--gold-400);
+}
+
+/* ── Section padding helpers ─────────────────────────────────── */
+.section-pad { padding: 5rem 1rem; }
+.section-pad-sm { padding: 3rem 1rem; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .font-heading { word-break: break-word; }
+  .priest-card { width: 100%; max-width: 320px; }
+  .trustee-card { width: 100%; max-width: 280px; }
+}

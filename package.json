@@ -1,0 +1,13 @@
+{
+  "name": "infant-jesus-church-mern",
+  "version": "1.0.0",
+  "description": "Infant Jesus Church Kallettumkara - MERN Stack Website",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install && npm run build",
+    "start": "cd server && npm start"
+  },
+  "private": true
+}

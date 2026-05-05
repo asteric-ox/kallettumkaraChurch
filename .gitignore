@@ -1,28 +1,37 @@
-instance/
-.webassets-cache
+# Dependency directories
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build directories
+client/dist/
+server/dist/
+
+# Environment variables
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-python-venv/
+client/.env
+server/.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Database
-church.db
-*.db
-*.sqlite
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Pycache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Static uploads
-static/uploads/*
-!static/uploads/.gitkeep
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Misc
+.cache/
+server/uploads/*
+!server/uploads/.gitkeep
