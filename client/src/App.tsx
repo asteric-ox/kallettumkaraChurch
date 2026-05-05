@@ -30,6 +30,7 @@ import AdminTrustees from './pages/admin/AdminTrustees';
 import AdminFamilyUnits from './pages/admin/AdminFamilyUnits';
 import AdminFamilyUnitEdit from './pages/admin/AdminFamilyUnitEdit';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminHallBookings from './pages/admin/AdminHallBookings';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAdmin } = useAuth();
@@ -70,6 +71,7 @@ function App() {
           <Route path="family-units" element={<AdminFamilyUnits />} />
           <Route path="family-units/:id" element={<AdminFamilyUnitEdit />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="hall-bookings" element={<AdminHallBookings />} />
         </Route>
       </Routes>
     </AuthProvider>

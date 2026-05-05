@@ -8,6 +8,7 @@ const navItems = [
   { to: '/admin/parish-council', label: 'Parish Council', icon: '👨‍⚖️' },
   { to: '/admin/trustees', label: 'Trustees', icon: '🏛️' },
   { to: '/admin/family-units', label: 'Family Units', icon: '👨‍👩‍👧‍👦' },
+  { to: '/admin/hall-bookings', label: 'Hall Bookings', icon: '📅' },
   { to: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ];
 
