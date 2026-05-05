@@ -87,15 +87,6 @@ export default function HallBookingPage() {
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) days.push(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), d));
 
-  const isBooked = (date: Date) => {
-    return bookings.some(b => {
-      const bDate = new Date(b.booking_date);
-      return bDate.getDate() === date.getDate() && 
-             bDate.getMonth() === date.getMonth() && 
-             bDate.getFullYear() === date.getFullYear();
-    });
-  };
-
   return (
     <>
       <PageHero title="Parish Hall Booking" subtitle="Experience elegance and tradition" />
@@ -206,46 +197,82 @@ export default function HallBookingPage() {
           </div>
 
           {/* BOTTOM SECTION: Full Month Calendar */}
-          <div className="animate-fade-in-up" style={{ background: 'rgba(255,255,255,0.02)', padding: '4rem', borderRadius: '2.5rem', border: '1px solid rgba(212,175,55,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+          <div className="animate-fade-in-up" style={{ background: 'rgba(255,255,255,0.02)', padding: '4rem', borderRadius: '3rem', border: '1px solid rgba(212,175,55,0.1)', boxShadow: '0 30px 60px rgba(0,0,0,0.4)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
               <div>
-                <h2 className="font-heading" style={{ fontSize: '2rem', color: '#fff' }}>Availability Calendar</h2>
-                <p style={{ color: '#6b7280' }}>Dates highlighted in gold are already reserved.</p>
+                <h2 className="font-heading" style={{ fontSize: '2.5rem', color: '#fff', letterSpacing: '-0.02em' }}>Availability Calendar</h2>
+                <p style={{ color: '#6b7280', fontSize: '1rem', marginTop: '0.5rem' }}>View upcoming celebrations and open dates.</p>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} className="cal-btn">←</button>
-                <span style={{ color: 'var(--gold-400)', fontWeight: 700, fontSize: '1.25rem', minWidth: '150px', textAlign: 'center' }}>
+              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '0.75rem 1.5rem', borderRadius: '9999px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} className="premium-nav-btn" aria-label="Previous Month">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <span style={{ color: 'var(--gold-400)', fontWeight: 800, fontSize: '1.25rem', minWidth: '160px', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                   {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
-                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} className="cal-btn">→</button>
+                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} className="premium-nav-btn" aria-label="Next Month">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1.25rem' }}>
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} style={{ textAlign: 'center', color: '#6b7280', fontWeight: 600, fontSize: '0.875rem', paddingBottom: '1rem' }}>{day}</div>
+                <div key={day} style={{ textAlign: 'center', color: 'var(--gold-500)', fontWeight: 700, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', paddingBottom: '1.5rem', opacity: 0.8 }}>{day}</div>
               ))}
-              {days.map((date, idx) => (
-                <div key={idx} style={{ 
-                  aspectRatio: '1/1', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  borderRadius: '1rem',
-                  background: date && isBooked(date) ? 'rgba(212,175,55,0.2)' : date ? 'rgba(255,255,255,0.03)' : 'transparent',
-                  border: date && isBooked(date) ? '1px solid var(--gold-500)' : '1px solid transparent',
-                  position: 'relative',
-                  transition: 'all 0.3s'
-                }}>
-                  {date && (
-                    <>
-                      <span style={{ color: isBooked(date) ? 'var(--gold-400)' : '#9ca3af', fontWeight: isBooked(date) ? 700 : 400 }}>{date.getDate()}</span>
-                      {isBooked(date) && <span style={{ fontSize: '0.6rem', color: 'var(--gold-500)', marginTop: '4px', fontWeight: 700 }}>RESERVED</span>}
-                    </>
-                  )}
-                </div>
-              ))}
+              {days.map((date, idx) => {
+                const booking = date ? bookings.find(b => {
+                  const bDate = new Date(b.booking_date);
+                  return bDate.getDate() === date.getDate() && 
+                         bDate.getMonth() === date.getMonth() && 
+                         bDate.getFullYear() === date.getFullYear();
+                }) : null;
+
+                return (
+                  <div key={idx} style={{ 
+                    minHeight: '140px',
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    padding: '1rem',
+                    borderRadius: '1.5rem',
+                    background: booking ? 'rgba(212,175,55,0.08)' : date ? 'rgba(255,255,255,0.02)' : 'transparent',
+                    border: booking ? '1px solid rgba(212,175,55,0.3)' : date ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    position: 'relative',
+                    cursor: date ? 'default' : 'initial'
+                  }}>
+                    {date && (
+                      <>
+                        <span style={{ 
+                          color: booking ? 'var(--gold-400)' : '#4b5563', 
+                          fontWeight: 800, 
+                          fontSize: '1.1rem',
+                          marginBottom: 'auto'
+                        }}>
+                          {date.getDate()}
+                        </span>
+                        
+                        {booking && (
+                          <div className="animate-fade-in" style={{ 
+                            background: 'rgba(212,175,55,0.15)', 
+                            padding: '0.75rem', 
+                            borderRadius: '0.75rem',
+                            marginTop: '0.5rem',
+                            border: '1px solid rgba(212,175,55,0.2)'
+                          }}>
+                            <p style={{ color: 'var(--gold-400)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.02em' }}>
+                              {booking.event_type}
+                            </p>
+                            <p style={{ color: '#9ca3af', fontSize: '0.65rem', fontWeight: 500 }}>
+                              {booking.start_time} - {booking.end_time}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -256,8 +283,33 @@ export default function HallBookingPage() {
         .label-small { display: block; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.6rem; letter-spacing: 0.05em; }
         .input-premium { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; color: #fff; font-size: 0.95rem; transition: all 0.3s; }
         .input-premium:focus { border-color: var(--gold-500); outline: none; background: rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(212,175,55,0.1); }
-        .cal-btn { background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.2); color: var(--gold-400); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; alignItems: center; justifyContent: center; transition: all 0.3s; }
-        .cal-btn:hover { background: var(--gold-600); color: #000; }
+        
+        .premium-nav-btn { 
+          background: transparent; 
+          border: 1px solid rgba(212,175,55,0.3); 
+          color: var(--gold-400); 
+          width: 44px; 
+          height: 44px; 
+          border-radius: 14px; 
+          cursor: pointer; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          transition: all 0.4s;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .premium-nav-btn:hover { 
+          background: var(--gold-600); 
+          color: #000; 
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(212,175,55,0.3);
+          border-color: transparent;
+        }
+
+        .premium-nav-btn:active {
+          transform: translateY(0);
+        }
       `}</style>
     </>
   );
