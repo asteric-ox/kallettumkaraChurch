@@ -39,6 +39,15 @@ export default function HallBookingPage() {
     }
   };
 
+  const getSlotTiming = (slot: string) => {
+    switch(slot) {
+      case 'Morning': return '8:00 AM – 1:00 PM';
+      case 'Afternoon': return '2:00 PM – 9:00 PM';
+      case 'Full Day': return '8:00 AM – 9:00 PM';
+      default: return '';
+    }
+  };
+
   return (
     <>
       <PageHero title="Parish Hall Booking" subtitle="Reserve our sacred space for your celebrations" />
@@ -55,7 +64,7 @@ export default function HallBookingPage() {
                 We offer a spacious environment with modern amenities.
               </p>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '3rem' }}>
                 {[
                   { icon: '👥', label: 'Capacity: 500+ Guests' },
                   { icon: '❄️', label: 'Fully Ventilated' },
@@ -67,6 +76,19 @@ export default function HallBookingPage() {
                     <span style={{ color: 'var(--gold-400)', fontWeight: 500 }}>{item.label}</span>
                   </div>
                 ))}
+              </div>
+
+              {/* Timing Display */}
+              <div className="glass-card" style={{ padding: '2rem', borderRadius: '1rem', border: '1px solid rgba(212,175,55,0.2)' }}>
+                <h4 className="font-heading" style={{ color: 'var(--gold-400)', marginBottom: '1rem' }}>Booking Slots</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {['Morning', 'Afternoon', 'Full Day'].map(slot => (
+                    <div key={slot} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                      <span style={{ color: '#fff', fontWeight: 600 }}>{slot}</span>
+                      <span style={{ color: '#9ca3af' }}>{getSlotTiming(slot)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -142,6 +164,7 @@ export default function HallBookingPage() {
                     <label style={{ display: 'block', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Date</label>
                     <input 
                       type="date" required
+                      min={new Date().toISOString().split('T')[0]}
                       value={formData.booking_date}
                       onChange={e => setFormData({...formData, booking_date: e.target.value})}
                       style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', padding: '0.75rem', color: '#fff' }}
@@ -160,6 +183,16 @@ export default function HallBookingPage() {
                     </select>
                   </div>
                 </div>
+
+                {/* Selected Slot Preview */}
+                {formData.time_slot && (
+                  <div style={{ padding: '0.75rem', background: 'rgba(212,175,55,0.1)', borderRadius: '0.5rem', border: '1px solid rgba(212,175,55,0.2)', textAlign: 'center' }}>
+                    <p style={{ color: 'var(--gold-400)', fontSize: '0.8rem', fontWeight: 600 }}>
+                      Selected Timing: {getSlotTiming(formData.time_slot)}
+                    </p>
+                  </div>
+                )}
+
 
                 <div className="form-group">
                   <label style={{ display: 'block', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Additional Notes</label>
