@@ -15,6 +15,7 @@ import familyUnitsRoutes from './routes/familyUnits';
 import settingsRoutes from './routes/settings';
 import prayerRequestsRoutes from './routes/prayerRequests';
 import translationsRoutes from './routes/translations';
+import hallBookingsRoutes from './routes/hallBookings';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/api/family-units', familyUnitsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/prayer-requests', prayerRequestsRoutes);
 app.use('/api/translations', translationsRoutes);
+app.use('/api/hall-bookings', hallBookingsRoutes);
 
 // Serve uploads
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

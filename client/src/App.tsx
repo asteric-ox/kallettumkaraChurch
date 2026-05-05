@@ -17,6 +17,7 @@ import AssociationsPage from './pages/AssociationsPage';
 import BulletinPage from './pages/BulletinPage';
 import GalleryPage from './pages/GalleryPage';
 import MaintenancePage from './pages/MaintenancePage';
+import HallBookingPage from './pages/HallBookingPage';
 
 // Admin Layout
 import AdminLayout from './components/admin/AdminLayout';
@@ -55,6 +56,7 @@ function App() {
           <Route path="/bulletin" element={<BulletinPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/maintenance" element={<MaintenancePage />} />
+          <Route path="/hall-booking" element={<HallBookingPage />} />
         </Route>
 
         {/* Admin Routes */}

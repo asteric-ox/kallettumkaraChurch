@@ -33,5 +33,5 @@ Thumbs.db
 
 # Misc
 .cache/
-server/uploads/*
-!server/uploads/.gitkeep
+# server/uploads/*
+# !server/uploads/.gitkeep

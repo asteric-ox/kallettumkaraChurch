@@ -9,6 +9,7 @@ const navLinks = [
   { to: '/associations', label: 'Pious Associations', key: 'nav.associations' },
   { to: '/bulletin', label: 'Bulletin', key: 'nav.bulletin' },
   { to: '/gallery', label: 'Gallery', key: 'nav.gallery' },
+  { to: '/hall-booking', label: 'Hall Booking', key: 'nav.hall_booking' },
   { to: '/contact', label: 'Contact', key: 'nav.contact' },
 ];
 
