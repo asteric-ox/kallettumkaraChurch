@@ -19,13 +19,19 @@ export default function TrusteeModal({ trustee, onClose }: Props) {
                 : <span className="font-heading" style={{ fontSize:'4rem', color:'var(--gold-400)', fontWeight:700 }}>{trustee.name[0]}</span>
               }
             </div>
-            <div style={{ textAlign:'center' }}>
+            <div style={{ textAlign:'center', width: '100%' }}>
               <h3 className="font-heading" style={{ fontSize:'1.875rem', fontWeight:700, color:'#fff', marginBottom:'0.25rem' }}>{trustee.name}</h3>
               <p style={{ color:'var(--gold-500)', fontWeight:600, letterSpacing:'0.1em', textTransform:'uppercase', fontSize:'0.875rem', marginBottom:'1.5rem' }}>{trustee.role}</p>
+              
               {trustee.phone && (
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'1rem' }}>
-                  <div style={{ width:32, height:32, borderRadius:'50%', background:'rgba(212,175,55,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>📞</div>
-                  <a href={`tel:${trustee.phone}`} style={{ color:'#d1d5db', fontWeight:500, textDecoration:'none' }}>{trustee.phone}</a>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:'1rem', width: '100%', maxWidth: '250px' }}>
+                    <div style={{ width:32, height:32, borderRadius:'50%', background:'rgba(212,175,55,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>📞</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone Number</span>
+                      <a href={`tel:${trustee.phone}`} style={{ color:'#d1d5db', fontWeight:500, textDecoration:'none' }}>{trustee.phone}</a>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

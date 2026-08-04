@@ -4,7 +4,7 @@ import type { Trustee } from '../../types';
 
 export default function AdminTrustees() {
   const [trustees, setTrustees] = useState<Trustee[]>([]);
-  const [form, setForm] = useState({ name:'', role:'Trustee', phone:'', dob:'', feast_day:'', installation_date:'', image_url:'' });
+  const [form, setForm] = useState({ name:'', role:'Trustee', phone:'', image_url:'' });
   const [editId, setEditId] = useState<string|null>(null);
   const [msg, setMsg] = useState('');
   const load = () => api.get('/trustees').then(r => setTrustees(r.data));
@@ -14,14 +14,13 @@ export default function AdminTrustees() {
     e.preventDefault();
     if (editId) { await api.put(`/trustees/${editId}`, form); notify('Updated!'); setEditId(null); }
     else { await api.post('/trustees', form); notify('Added!'); }
-    setForm({ name:'', role:'Trustee', phone:'', dob:'', feast_day:'', installation_date:'', image_url:'' });
+    setForm({ name:'', role:'Trustee', phone:'', image_url:'' });
     load();
   };
   const del = async (id: string) => { if (confirm('Delete?')) { await api.delete(`/trustees/${id}`); load(); }};
-  const startEdit = (t: Trustee) => { setEditId(t._id); setForm({ name:t.name, role:t.role, phone:t.phone, dob:t.dob, feast_day:t.feast_day, installation_date:t.installation_date, image_url:t.image_url }); };
+  const startEdit = (t: Trustee) => { setEditId(t._id); setForm({ name:t.name, role:t.role, phone:t.phone, image_url:t.image_url }); };
   const fields = [
-    { key:'name', label:'Name', required:true }, { key:'role', label:'Role' }, { key:'phone', label:'Phone' },
-    { key:'dob', label:'Date of Birth' }, { key:'feast_day', label:'Feast Day' }, { key:'installation_date', label:'Installation Date' }, { key:'image_url', label:'Image URL' },
+    { key:'name', label:'Name', required:true }, { key:'role', label:'Role' }, { key:'phone', label:'Phone' }, { key:'image_url', label:'Photo Upload' },
   ];
   return (
     <div>
@@ -32,12 +31,27 @@ export default function AdminTrustees() {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:'1rem', marginBottom:'1rem' }}>
           {fields.map(({ key, label, required }) => (
             <div key={key}><label style={{ fontSize:'0.8125rem', color:'#9ca3af', display:'block', marginBottom:'0.5rem' }}>{label}</label>
-              <input className="form-input" placeholder={label} value={(form as any)[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} required={required} /></div>
+              {key === 'image_url' ? (
+                <div>
+                  {form.image_url && <img src={form.image_url} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%', marginBottom: '0.5rem', display: 'block' }} />}
+                  <input type="file" accept="image/*" className="form-input" style={{ padding: '0.5rem' }} onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => setForm({ ...form, image_url: reader.result as string });
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+                </div>
+              ) : (
+                <input className="form-input" placeholder={label} value={(form as any)[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} required={required} />
+              )}
+            </div>
           ))}
         </div>
         <div style={{ display:'flex', gap:'0.75rem' }}>
           <button type="submit" className="btn-gold" style={{ padding:'0.75rem 1.5rem' }}>{editId ? 'Update' : 'Add'}</button>
-          {editId && <button type="button" className="btn-ghost" onClick={() => { setEditId(null); setForm({ name:'', role:'Trustee', phone:'', dob:'', feast_day:'', installation_date:'', image_url:'' }); }} style={{ padding:'0.75rem 1.5rem' }}>Cancel</button>}
+          {editId && <button type="button" className="btn-ghost" onClick={() => { setEditId(null); setForm({ name:'', role:'Trustee', phone:'', image_url:'' }); }} style={{ padding:'0.75rem 1.5rem' }}>Cancel</button>}
         </div>
       </form>
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:'1rem' }}>

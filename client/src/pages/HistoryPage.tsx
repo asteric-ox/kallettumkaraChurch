@@ -1,17 +1,26 @@
-﻿import PageHero from '../components/PageHero';
+import PageHero from '../components/PageHero';
 export default function HistoryPage() {
   const events = [
-    { year:'~1850', title:'Parish Establishment', desc:'The Infant Jesus Church, Kallettumkara was established as a dedicated parish serving the Syro-Malabar Catholic faithful of the region.' },
-    { year:'Early 1900s', title:'Church Construction', desc:'The first permanent church structure was built, providing a sacred space for the growing parish community.' },
-    { year:'Mid 1900s', title:'Community Growth', desc:'The parish witnessed significant growth with the establishment of various pious associations and community organizations.' },
-    { year:'1990s', title:'Renovation & Expansion', desc:'Major renovation works were carried out to accommodate the growing congregation and modernize the facilities.' },
-    { year:'2000s', title:'Family Units Formation', desc:'The parish organized its 800+ families into 25 family units for better pastoral care and community building.' },
-    { year:'Present', title:'A Living Community', desc:'Today, Infant Jesus Church stands as a vibrant center of Syro-Malabar Catholic faith, worship, and community life.' },
+    { year:'1874', title:'Historical Traces', desc:'Historical text registries and church land history trace the earliest roots of the parish back to 1874.' },
+    { year:'Late 19th Century', title:'Parish Establishment', desc:'The Infant Jesus Church formally established its roots as a prominent Syro-Malabar Catholic parish in the Thrissur district under the Diocese of Irinjalakuda.' },
+    { year:'2011', title:'125th Anniversary', desc:'The parish joyously celebrated its 125th anniversary, a historic milestone marking its vibrant community and grand church festival celebrations.' },
+    { year:'Present', title:'A Vital Hub', desc:'Today, the parish stands as a vital hub for the Congregation of the Holy Family (CHF), running nearby charitable and educational institutions associated with the legacy of St. Mariam Thresia.' },
   ];
   return (
     <>
       <PageHero subtitle="Our Story" title="Parish History" desc="A journey of faith through the centuries" />
-      <section style={{ padding:'5rem 1rem' }}>
+      
+      <section style={{ padding:'5rem 1rem 2rem', maxWidth:'52rem', margin:'0 auto', textAlign:'center' }}>
+        <h2 className="font-heading" style={{ fontSize:'2.25rem', fontWeight:700, color:'#fff', marginBottom:'1.5rem' }}>History at a Glance</h2>
+        <p style={{ color:'#d1d5db', fontSize:'1.05rem', lineHeight:1.8, marginBottom:'1.5rem' }}>
+          The <strong>Infant Jesus Church in Kallettumkara</strong> is a prominent Syro-Malabar Catholic parish in the Thrissur district under the administration of the Syro-Malabar Catholic Diocese of Irinjalakuda. Tracing its roots back to the late 19th century, the parish celebrated its 125th anniversary in 2011, marking it for its vibrant community and grand church festival celebrations.
+        </p>
+        <p style={{ color:'#d1d5db', fontSize:'1.05rem', lineHeight:1.8 }}>
+          The parish is renowned for its spiritual and cultural festivals, notably the grand <em>'Perunnal'</em> (feast), which is highlighted by well-lit night displays, community gatherings, and spectacular celebrations. Today, Kallettumkara showcases as a vital hub for the Congregation of the Holy Family (CHF), which runs nearby charitable and educational institutions associated with the legacy of St. Mariam Thresia.
+        </p>
+      </section>
+
+      <section style={{ padding:'3rem 1rem 5rem' }}>
         <div style={{ maxWidth:'56rem', margin:'0 auto', position:'relative' }}>
           <div style={{ position:'absolute', left:'50%', top:0, bottom:0, width:2, background:'linear-gradient(to bottom,var(--gold-600),transparent)', transform:'translateX(-50%)' }} />
           <div style={{ display:'flex', flexDirection:'column', gap:'3rem' }}>

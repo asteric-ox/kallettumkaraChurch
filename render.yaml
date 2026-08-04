@@ -3,7 +3,8 @@ services:
     name: church-website-mern
     env: node
     plan: free
-    buildCommand: npm run build
+    rootDir: server
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
@@ -15,4 +16,8 @@ services:
       - key: PORT
         value: 10000
       - key: SEED_DATA
-        value: "true"
+        value: "false"
+      - key: CLIENT_URL
+        # Set this to your Cloudflare Pages URL e.g. https://your-project.pages.dev
+        sync: false
+

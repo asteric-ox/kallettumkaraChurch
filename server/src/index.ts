@@ -23,16 +23,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ── Middleware ─────────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:5173',
+  'http://localhost:5173',
+];
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin '${origin}' not allowed`));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── Static Files ───────────────────────────────────────────────────
-const clientBuildPath = path.join(__dirname, '../../client/dist');
-app.use(express.static(clientBuildPath));
 
 // ── API Routes ─────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
@@ -54,11 +62,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Infant Jesus Church API running' });
 });
 
-// Handle React routing, return all requests to React app
-app.get('*', (req, res) => {
-  if (req.path.startsWith('/api')) return;
-  res.sendFile(path.join(clientBuildPath, 'index.html'));
-});
+
 
 // ── Start Server ───────────────────────────────────────────────────
 const startServer = async () => {
