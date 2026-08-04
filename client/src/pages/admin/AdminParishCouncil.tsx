@@ -1,3 +1,4 @@
+import { getImageUrl } from '../../utils/imageUtils';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import type { ParishCouncilMember } from '../../types';
@@ -55,7 +56,7 @@ export default function AdminParishCouncil() {
           <div key={m._id} className="glass-card" style={{ padding:'1.25rem', borderRadius:'1rem' }}>
             <div style={{ display:'flex', gap:'0.75rem', alignItems:'flex-start', marginBottom:'1rem' }}>
               <div style={{ width:48, height:48, borderRadius:'50%', overflow:'hidden', flexShrink:0, background:'linear-gradient(135deg,var(--gold-500),var(--gold-700))', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, color:'var(--maroon-950)' }} className="font-heading">
-                {m.image_url ? <img src={m.image_url} alt={m.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : m.name[0]}
+                {m.image_url ? <img src={getImageUrl(m.image_url)} alt={m.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : m.name[0]}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <p className="font-heading" style={{ fontWeight:600, color:'#fff', fontSize:'0.9375rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{m.name}</p>

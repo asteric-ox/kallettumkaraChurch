@@ -1,3 +1,4 @@
+import { getImageUrl } from '../../utils/imageUtils';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -25,7 +26,7 @@ export default function AdminLogin() {
       <div style={{ width:'100%', maxWidth:'24rem' }}>
         <div style={{ textAlign:'center', marginBottom:'2rem' }}>
           <div style={{ width:80, height:80, borderRadius:'50%', overflow:'hidden', margin:'0 auto 1rem', border:'2px solid rgba(212,175,55,0.3)' }}>
-            <img src="/uploads/Infant.png" alt="Logo" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+            <img src={getImageUrl("/uploads/Infant.png")} alt="Logo" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           </div>
           <h1 className="font-heading" style={{ fontSize:'1.75rem', fontWeight:700, color:'#fff', marginBottom:'0.25rem' }}>Admin Login</h1>
           <p style={{ color:'#6b7280', fontSize:'0.875rem' }}>Infant Jesus Church, Kallettumkara</p>

@@ -1,3 +1,4 @@
+import { getImageUrl } from '../utils/imageUtils';
 import type { ParishCouncilMember } from '../types';
 
 interface Props { priest: ParishCouncilMember; onClose: () => void; }
@@ -16,7 +17,7 @@ export default function PriestModal({ priest, onClose }: Props) {
             <div style={{ position:'absolute', inset:-4, borderRadius:'50%', background:'linear-gradient(135deg,var(--gold-500),var(--gold-700))', opacity:0.3 }} />
             <div style={{ width:144, height:144, borderRadius:'50%', overflow:'hidden', position:'relative', zIndex:1, background:'linear-gradient(135deg,var(--gold-500),var(--gold-700))', display:'flex', alignItems:'center', justifyContent:'center' }}>
               {priest.image_url
-                ? <img src={priest.image_url} alt={priest.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                ? <img src={getImageUrl(priest.image_url)} alt={priest.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 : <span className="font-heading" style={{ fontSize:'3.5rem', color:'var(--maroon-950)', fontWeight:700 }}>{priest.name[0]}</span>
               }
             </div>

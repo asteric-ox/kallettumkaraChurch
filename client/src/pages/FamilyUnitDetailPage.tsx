@@ -1,3 +1,4 @@
+import { getImageUrl } from '../utils/imageUtils';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
@@ -29,7 +30,7 @@ export default function FamilyUnitDetailPage() {
               {leaders.map(({ role, data }) => (
                 <div key={role} className="glass-card" style={{ padding:'1.5rem', borderRadius:'1rem', textAlign:'center' }}>
                   {unit.show_photo && data.image_url
-                    ? <img src={data.image_url} alt={data.name} style={{ width:72, height:72, borderRadius:'50%', objectFit:'cover', margin:'0 auto 0.75rem', border:'2px solid rgba(212,175,55,0.3)' }} />
+                    ? <img src={getImageUrl(data.image_url)} alt={data.name} style={{ width:72, height:72, borderRadius:'50%', objectFit:'cover', margin:'0 auto 0.75rem', border:'2px solid rgba(212,175,55,0.3)' }} />
                     : <div style={{ width:72, height:72, borderRadius:'50%', background:'var(--church-accent)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 0.75rem', fontSize:'1.5rem', color:'var(--gold-400)', fontWeight:700 }} className="font-heading">{data.name !== '—' ? data.name[0] : '?'}</div>
                   }
                   <span style={{ fontSize:'0.75rem', color:'var(--gold-500)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em', display:'block', marginBottom:'0.25rem' }}>{role}</span>
@@ -47,7 +48,7 @@ export default function FamilyUnitDetailPage() {
                 {visibleFamilies.map((family, i) => (
                   <div key={i} className="glass-card" style={{ padding:'1rem', borderRadius:'0.75rem', textAlign:'center' }}>
                     {unit.show_photo && family.image_url
-                      ? <img src={family.image_url} alt={family.name} style={{ width:56, height:56, borderRadius:'50%', objectFit:'cover', margin:'0 auto 0.75rem', border:'2px solid rgba(212,175,55,0.2)' }} />
+                      ? <img src={getImageUrl(family.image_url)} alt={family.name} style={{ width:56, height:56, borderRadius:'50%', objectFit:'cover', margin:'0 auto 0.75rem', border:'2px solid rgba(212,175,55,0.2)' }} />
                       : <div style={{ width:56, height:56, borderRadius:'50%', background:'rgba(42,31,21,0.8)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 0.75rem', color:'var(--gold-400)', fontWeight:700, fontSize:'1.125rem' }} className="font-heading">{family.name[0]}</div>
                     }
                     <p style={{ color:'#fff', fontWeight:500, fontSize:'0.875rem' }}>{family.name}</p>

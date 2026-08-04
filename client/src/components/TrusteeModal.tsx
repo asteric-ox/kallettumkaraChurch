@@ -1,3 +1,4 @@
+import { getImageUrl } from '../utils/imageUtils';
 import type { Trustee } from '../types';
 
 interface Props { trustee: Trustee; onClose: () => void; }
@@ -15,7 +16,7 @@ export default function TrusteeModal({ trustee, onClose }: Props) {
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'2rem' }}>
             <div style={{ width:160, height:160, borderRadius:'1.5rem', overflow:'hidden', background:'var(--church-accent)', display:'flex', alignItems:'center', justifyContent:'center', transform:'rotate(3deg)', boxShadow:'0 20px 40px rgba(0,0,0,0.4)' }}>
               {trustee.image_url
-                ? <img src={trustee.image_url} alt={trustee.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                ? <img src={getImageUrl(trustee.image_url)} alt={trustee.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                 : <span className="font-heading" style={{ fontSize:'4rem', color:'var(--gold-400)', fontWeight:700 }}>{trustee.name[0]}</span>
               }
             </div>

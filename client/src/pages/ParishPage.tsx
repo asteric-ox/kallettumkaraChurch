@@ -1,3 +1,4 @@
+import { getImageUrl } from '../utils/imageUtils';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import type { ParishCouncilMember } from '../types';
@@ -17,7 +18,7 @@ export default function ParishPage() {
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.02)'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1)'}>
                 {p.image_url
-                  ? <img src={p.image_url} alt={p.name} style={{ width:96, height:96, borderRadius:'50%', objectFit:'cover', margin:'0 auto 1rem', border:'2px solid rgba(212,175,55,0.3)', display:'block' }} />
+                  ? <img src={getImageUrl(p.image_url)} alt={p.name} style={{ width:96, height:96, borderRadius:'50%', objectFit:'cover', margin:'0 auto 1rem', border:'2px solid rgba(212,175,55,0.3)', display:'block' }} />
                   : <div style={{ width:96, height:96, borderRadius:'50%', background:'linear-gradient(135deg,var(--gold-500),var(--gold-700))', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem', fontSize:'2.5rem', color:'var(--maroon-950)', fontWeight:700 }} className="font-heading">{p.name[0]}</div>
                 }
                 <h3 className="font-heading" style={{ fontSize:'1.125rem', fontWeight:600, color:'#fff', marginBottom:'0.25rem' }}>{p.name}</h3>

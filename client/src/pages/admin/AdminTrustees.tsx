@@ -1,3 +1,4 @@
+import { getImageUrl } from '../../utils/imageUtils';
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import type { Trustee } from '../../types';
@@ -33,7 +34,7 @@ export default function AdminTrustees() {
             <div key={key}><label style={{ fontSize:'0.8125rem', color:'#9ca3af', display:'block', marginBottom:'0.5rem' }}>{label}</label>
               {key === 'image_url' ? (
                 <div>
-                  {form.image_url && <img src={form.image_url} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%', marginBottom: '0.5rem', display: 'block' }} />}
+                  {form.image_url && <img src={getImageUrl(form.image_url)} alt="Preview" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%', marginBottom: '0.5rem', display: 'block' }} />}
                   <input type="file" accept="image/*" className="form-input" style={{ padding: '0.5rem' }} onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -59,7 +60,7 @@ export default function AdminTrustees() {
           <div key={t._id} className="glass-card" style={{ padding:'1.25rem', borderRadius:'1rem' }}>
             <div style={{ display:'flex', alignItems:'center', gap:'0.75rem', marginBottom:'1rem' }}>
               <div style={{ width:48, height:48, borderRadius:'50%', background:'var(--church-accent)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, color:'var(--gold-400)', flexShrink:0, overflow:'hidden' }} className="font-heading">
-                {t.image_url ? <img src={t.image_url} alt={t.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : t.name[0]}
+                {t.image_url ? <img src={getImageUrl(t.image_url)} alt={t.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : t.name[0]}
               </div>
               <div><p className="font-heading" style={{ fontWeight:600, color:'#fff', fontSize:'0.9375rem' }}>{t.name}</p><p style={{ color:'var(--gold-500)', fontSize:'0.8125rem' }}>{t.role}</p></div>
             </div>

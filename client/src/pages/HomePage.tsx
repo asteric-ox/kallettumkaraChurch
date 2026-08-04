@@ -1,3 +1,4 @@
+import { getImageUrl } from '../utils/imageUtils';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import type { Announcement, ParishCouncilMember, Trustee, MassTiming } from '../types';
@@ -98,7 +99,7 @@ export default function HomePage() {
               </div>
             </div>
             <div style={{ position:'relative', borderRadius:'1.5rem', overflow:'hidden', boxShadow:'0 25px 50px rgba(0,0,0,0.5)', border:'1px solid rgba(212,175,55,0.2)', aspectRatio:'4/5' }}>
-              <img src="/uploads/ASH09186.JPG" alt="Infant Jesus Church" style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 1s' }} />
+              <img src={getImageUrl("/uploads/ASH09186.JPG")} alt="Infant Jesus Church" style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 1s' }} />
               <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, var(--church-bg), transparent, transparent)', opacity:0.6 }} />
             </div>
           </div>
@@ -120,7 +121,7 @@ export default function HomePage() {
                   <div style={{ position:'relative', width:112, height:112, margin:'0 auto 1.25rem' }}>
                     <div className="animate-pulse" style={{ position:'absolute', inset:-4, borderRadius:'50%', background:'linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.1))' }} />
                     {p.image_url
-                      ? <img src={p.image_url} alt={p.name} style={{ width:112, height:112, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(212,175,55,0.3)', position:'relative', zIndex:1 }} />
+                      ? <img src={getImageUrl(p.image_url)} alt={p.name} style={{ width:112, height:112, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(212,175,55,0.3)', position:'relative', zIndex:1 }} />
                       : <div style={{ width:112, height:112, borderRadius:'50%', background:'linear-gradient(135deg,var(--gold-500),var(--gold-700))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'2.5rem', color:'var(--maroon-950)', fontWeight:700, position:'relative', zIndex:1 }} className="font-heading">{p.name[0]}</div>
                     }
                   </div>
@@ -148,7 +149,7 @@ export default function HomePage() {
                   onClick={() => setSelectedTrustee(t)}>
                   <div style={{ width:96, height:96, margin:'0 auto 1.25rem' }}>
                     {t.image_url
-                      ? <img src={t.image_url} alt={t.name} style={{ width:96, height:96, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(212,175,55,0.2)' }} />
+                      ? <img src={getImageUrl(t.image_url)} alt={t.name} style={{ width:96, height:96, borderRadius:'50%', objectFit:'cover', border:'2px solid rgba(212,175,55,0.2)' }} />
                       : <div style={{ width:96, height:96, borderRadius:'50%', background:'var(--church-accent)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'2rem', color:'var(--gold-400)', fontWeight:700 }} className="font-heading">{t.name[0]}</div>
                     }
                   </div>
