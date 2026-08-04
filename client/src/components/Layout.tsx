@@ -1,4 +1,3 @@
-import { getImageUrl } from '../utils/imageUtils';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 
@@ -84,11 +83,8 @@ export default function Layout() {
         >
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
-              <div
-                className="animate-zoom-in"
-                style={{ width: 160, height: 160, borderRadius: '50%', overflow: 'hidden', boxShadow: '0 0 50px rgba(212,175,55,0.2)' }}
-              >
-                <img src={getImageUrl("/uploads/Infant.png")} alt="Infant Jesus" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ width: '6rem', height: '6rem', margin: '0 auto 1.5rem', borderRadius: '50%', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                <img src="/uploads/Infant.png" alt="Infant Jesus" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
             <div className="animate-fade-in-up-delay">
@@ -110,7 +106,7 @@ export default function Layout() {
             {/* Brand */}
             <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
               <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', transition: 'transform 0.3s' }}>
-                <img src={getImageUrl("/uploads/Infant.png")} alt="Infant Jesus Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src="/uploads/Infant.png" alt="Infant Jesus Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <div className="hidden-mobile">
                 <p className="font-heading" style={{ color: 'var(--gold-400)', fontSize: '1.125rem', fontWeight: 600, lineHeight: 1.2 }}>Infant Jesus Church</p>
