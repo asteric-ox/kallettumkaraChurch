@@ -71,10 +71,8 @@ app.get('/api/health', (_req, res) => {
 const startServer = async () => {
   try {
     await connectDB();
-    // Only seed if needed or via environment variable
-    if (process.env.SEED_DATA === 'true') {
-      await seedDatabase();
-    }
+    // Run seed Database unconditionally to ensure admin credentials are set
+    await seedDatabase();
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
