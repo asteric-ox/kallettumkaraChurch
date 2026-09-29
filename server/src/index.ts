@@ -26,14 +26,30 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // ── Middleware ─────────────────────────────────────────────────────
+const clientUrls = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map(u => u.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
+  ...clientUrls,
+  'https://kallettumkarachurch.site',
+  'https://www.kallettumkarachurch.site',
   'http://localhost:5173',
+  'http://localhost:3000',
 ];
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g. mobile apps, curl)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true);
+    
+    const cleanOrigin = origin.replace(/\/$/, '');
+    const isAllowed = allowedOrigins.includes(cleanOrigin) || 
+      cleanOrigin.endsWith('.pages.dev') || 
+      cleanOrigin.endsWith('.kallettumkarachurch.site');
+
+    if (isAllowed) {
       callback(null, true);
     } else {
       callback(new Error(`CORS policy: origin '${origin}' not allowed`));

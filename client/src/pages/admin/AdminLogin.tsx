@@ -18,7 +18,7 @@ export default function AdminLogin() {
       login(res.data.token, res.data.username);
       navigate(getAdminPath());
     } catch (err: any) { 
-      const msg = err.response?.data?.message || 'Invalid credentials. Please try again.';
+      const msg = err.response?.data?.message || (err.message === 'Network Error' || !err.response ? 'Cannot connect to backend server. Please verify backend URL and connection.' : 'Invalid credentials. Please try again.');
       setError(msg); 
     }
     finally { setLoading(false); }
