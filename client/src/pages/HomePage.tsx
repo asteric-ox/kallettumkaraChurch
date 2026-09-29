@@ -13,6 +13,7 @@ export default function HomePage() {
   const [council, setCouncil] = useState<ParishCouncilMember[]>([]);
   const [trustees, setTrustees] = useState<Trustee[]>([]);
   const [allTimings, setAllTimings] = useState<MassTiming[]>([]);
+  const [specials, setSpecials] = useState<MassTiming[]>([]);
   const today = DAYS[new Date().getDay()];
   const [selectedPriest, setSelectedPriest] = useState<ParishCouncilMember | null>(null);
   const [selectedTrustee, setSelectedTrustee] = useState<Trustee | null>(null);
@@ -22,10 +23,24 @@ export default function HomePage() {
     api.get('/parish-council').then(r => setCouncil(r.data));
     api.get('/trustees').then(r => setTrustees(r.data));
     api.get('/mass-timings').then(r => setAllTimings(r.data));
+    api.get('/mass-timings/special').then(r => setSpecials(r.data));
   }, []);
 
+  const todayDateStr = new Date().toISOString().split('T')[0];
+  const todaySpecials = specials.filter(s => {
+    if (!s.special_date) return s.day === today;
+    const sDate = new Date(s.special_date).toISOString().split('T')[0];
+    return sDate === todayDateStr;
+  });
   const dailyMasses = allTimings.filter(m => m.day === today);
   const sundayMasses = allTimings.filter(m => m.category === 'Sunday');
+
+  const marqueeItems = [
+    ...announcements.map(a => ({ id: a._id, text: a.title })),
+    ...specials
+      .filter(s => !announcements.some(a => a.mass_timing_id === s._id))
+      .map(s => ({ id: s._id, text: `✨ Special Mass: ${s.special_occasion} (${s.time})` })),
+  ];
 
   return (
     <>
@@ -65,15 +80,48 @@ export default function HomePage() {
       </section>
 
       {/* ANNOUNCEMENTS MARQUEE */}
-      {announcements.length > 0 && (
+      {marqueeItems.length > 0 && (
         <section style={{ background:'linear-gradient(to right, var(--gold-700), var(--gold-600), var(--gold-700))', padding:'0.75rem 0', overflow:'hidden', position:'relative' }}>
           <div className="marquee-track" style={{ display:'flex', gap:'4rem', whiteSpace:'nowrap' }}>
-            {[...announcements, ...announcements].map((a, i) => (
+            {[...marqueeItems, ...marqueeItems].map((item, i) => (
               <span key={i} style={{ display:'inline-flex', alignItems:'center', gap:'0.5rem', color:'var(--maroon-950)', fontWeight:600, fontSize:'0.875rem' }}>
                 <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--maroon-700)', display:'inline-block' }} />
-                {a.title}
+                {item.text}
               </span>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* RECENT ANNOUNCEMENTS */}
+      {announcements.length > 0 && (
+        <section style={{ padding: '4rem 1rem', background: 'var(--church-bg)' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+              <div>
+                <p style={{ color: 'var(--gold-500)', fontSize: '0.875rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Stay Updated</p>
+                <h2 className="font-heading" style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 700, color: '#fff' }}>Recent Announcements</h2>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              {announcements.slice(0, 3).map(a => (
+                <div key={a._id} className="glass-card" style={{ padding: '1.5rem', borderRadius: '1rem', borderLeft: a.is_special_mass ? '3px solid var(--gold-400)' : '1px solid rgba(255,255,255,0.06)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <h3 className="font-heading" style={{ fontSize: '1.125rem', fontWeight: 600, color: '#fff' }}>{a.title}</h3>
+                    {a.is_special_mass && (
+                      <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem', borderRadius: '9999px', background: 'rgba(212,175,55,0.15)', color: 'var(--gold-400)', border: '1px solid rgba(212,175,55,0.3)', fontWeight: 600 }}>✨ Special Mass</span>
+                    )}
+                  </div>
+                  <p style={{ color: '#d1d5db', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{a.content}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: '#9ca3af' }}>
+                    <span>📅 {new Date(a.date).toLocaleDateString()}</span>
+                    {a.pdf_url && (
+                      <a href={a.pdf_url} target="_blank" rel="noreferrer" style={{ color: 'var(--gold-400)', textDecoration: 'underline' }}>View PDF</a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -176,6 +224,25 @@ export default function HomePage() {
                 <span style={{ width:40, height:40, borderRadius:'0.5rem', background:'rgba(212,175,55,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>☀</span>
                 {today === 'Sunday' ? 'Sunday Schedule' : today}
               </h3>
+              {todaySpecials.length > 0 && (
+                <div style={{ marginBottom: '1.25rem', padding: '1rem', borderRadius: '0.75rem', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.35)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <span style={{ fontSize: '1rem' }}>✨</span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-400)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Special Feast Mass Today</span>
+                  </div>
+                  {todaySpecials.map(s => (
+                    <div key={s._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <span className="font-heading" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', minWidth: 80 }}>{s.time}</span>
+                      <div>
+                        <p style={{ color: 'var(--gold-300)', fontWeight: 600 }}>{s.special_occasion}</p>
+                        {s.description && s.description !== s.special_occasion && (
+                          <p style={{ fontSize: '0.75rem', color: '#d1d5db' }}>{s.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
               {dailyMasses.length > 0 ? (
                 <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                   {dailyMasses.map(m => (
@@ -185,7 +252,7 @@ export default function HomePage() {
                     </div>
                   ))}
                 </div>
-              ) : <p style={{ color:'#9ca3af', fontStyle:'italic' }}>No Mass scheduled today.</p>}
+              ) : todaySpecials.length === 0 ? <p style={{ color:'#9ca3af', fontStyle:'italic' }}>No Mass scheduled today.</p> : null}
             </div>
             <div className="glass-card" style={{ borderRadius:'1rem', padding:'2rem', border:'1px solid rgba(212,175,55,0.1)' }}>
               <h3 className="font-heading" style={{ fontSize:'1.25rem', fontWeight:600, color:'var(--gold-400)', marginBottom:'1.5rem', display:'flex', alignItems:'center', gap:'0.75rem' }}>

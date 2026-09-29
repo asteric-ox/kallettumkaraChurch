@@ -4,10 +4,12 @@ import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 
-// Get all approved bookings (Public)
+// Get approved + pending bookings for the public calendar
 router.get('/public', async (req, res) => {
   try {
-    const bookings = await HallBooking.find({ status: 'Approved' }).sort({ booking_date: 1 });
+    const bookings = await HallBooking.find({
+      status: { $in: ['Approved', 'Pending'] }
+    }).sort({ booking_date: 1 });
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching availability' });
@@ -17,10 +19,23 @@ router.get('/public', async (req, res) => {
 // Get all bookings (Admin only)
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const bookings = await HallBooking.find().sort({ booking_date: 1 });
+    const bookings = await HallBooking.find().sort({ created_at: -1 });
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching bookings' });
+  }
+});
+
+// Get single booking status by ID (Public – for tracking)
+router.get('/status/:id', async (req, res) => {
+  try {
+    const booking = await HallBooking.findById(req.params.id).select(
+      'name event_type booking_date start_time end_time time_slot status'
+    );
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+    res.json(booking);
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid booking ID' });
   }
 });
 
@@ -34,7 +49,7 @@ router.get('/check-availability', async (req, res) => {
       booking_date: new Date(date as string),
       status: { $ne: 'Declined' }
     });
-    
+
     res.json({ available: bookings.length === 0, bookings });
   } catch (error) {
     res.status(500).json({ message: 'Error checking availability' });
@@ -45,7 +60,7 @@ router.get('/check-availability', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, phone, email, event_type, booking_date, time_slot, start_time, end_time, additional_info } = req.body;
-    
+
     const newBooking = new HallBooking({
       name,
       phone,

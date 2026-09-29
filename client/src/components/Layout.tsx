@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, Navigate } from 'react-router-dom';
+import api from '../services/api';
 
 const navLinks = [
   { to: '/', label: 'Home', key: 'nav.home' },
@@ -16,6 +17,8 @@ const navLinks = [
 export default function Layout() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   // Lazy initializer: reads sessionStorage synchronously on first render,
   // so preloaderVisible is TRUE before React paints anything — no flash.
   const [preloaderVisible, setPreloaderVisible] = useState<boolean>(
@@ -64,6 +67,26 @@ export default function Layout() {
   useEffect(() => {
     setMobileOpen(false);
   }, [location]);
+
+  // Fetch maintenance mode settings on every navigation
+  useEffect(() => {
+    api.get('/settings')
+      .then(r => {
+        setMaintenanceMode(r.data.maintenance_mode || false);
+      })
+      .catch(() => {})
+      .finally(() => setSettingsLoaded(true));
+  }, [location.pathname]);
+
+  // Redirect to /maintenance if enabled (but not from admin or the page itself)
+  if (settingsLoaded && maintenanceMode && location.pathname !== '/maintenance' && !location.pathname.startsWith('/admin')) {
+    return <Navigate to="/maintenance" replace />;
+  }
+
+  // Redirect away from /maintenance if disabled
+  if (settingsLoaded && !maintenanceMode && location.pathname === '/maintenance') {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <>

@@ -163,6 +163,10 @@ select.form-input option { background: var(--church-card); color: #e5e7eb; }
   0%,100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
   50%      { transform: translateY(0);   animation-timing-function: cubic-bezier(0,0,0.2,1); }
 }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
 .animate-fade-in           { animation: fadeIn 0.8s ease-out both; }
 .animate-fade-in-up        { animation: fadeInUp 0.8s ease-out both; }
@@ -172,6 +176,14 @@ select.form-input option { background: var(--church-card); color: #e5e7eb; }
 .animate-pulse             { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
 .animate-spin              { animation: spin 1s linear infinite; }
 .animate-bounce            { animation: bounce 1s infinite; }
+
+.marquee-track {
+  animation: marquee 25s linear infinite;
+  width: max-content;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
 
 /* ── Timeline ──────────────────────────────────────────────── */
 .timeline-entry {

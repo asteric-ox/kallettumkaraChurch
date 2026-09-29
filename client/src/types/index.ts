@@ -5,7 +5,11 @@ export interface MassTiming {
   day: string;
   time: string;
   description: string;
-  category: 'Weekday' | 'Sunday';
+  category: 'Weekday' | 'Sunday' | 'Special';
+  is_special?: boolean;
+  special_date?: string;
+  special_occasion?: string;
+  special_expiry?: string;
 }
 
 export interface Announcement {
@@ -15,6 +19,8 @@ export interface Announcement {
   date: string;
   expiry: string;
   pdf_url: string;
+  mass_timing_id?: string;
+  is_special_mass?: boolean;
 }
 
 export interface ParishCouncilMember {
