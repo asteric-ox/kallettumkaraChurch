@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const ipRestrictionMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+  if (process.env.NODE_ENV === 'development' || process.env.DISABLE_IP_RESTRICTION === 'true') {
+    return next();
+  }
+
   const allowedIpsStr = process.env.ADMIN_ALLOWED_IPS;
   
   if (!allowedIpsStr) {
-    if (process.env.NODE_ENV === 'development' || process.env.DISABLE_IP_RESTRICTION === 'true') {
-      return next();
-    }
     // Fail securely if no IP is provided in production and no explicit disable flag
     res.status(403).json({ message: 'IP restriction is enabled but no IPs are configured in ADMIN_ALLOWED_IPS.' });
     return;
