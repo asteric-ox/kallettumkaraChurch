@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const ipRestrictionMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  if (process.env.NODE_ENV === 'development' || process.env.DISABLE_IP_RESTRICTION === 'true') {
+  const disableIp = process.env.DISABLE_IP_RESTRICTION?.toString().trim().toLowerCase();
+  if (process.env.NODE_ENV === 'development' || disableIp === 'true') {
     return next();
   }
 
