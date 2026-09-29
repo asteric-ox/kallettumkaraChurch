@@ -9,13 +9,17 @@ import SiteSettings from './models/SiteSettings';
 
 export const seedDatabase = async (): Promise<void> => {
   // Admin
-  const hashed = await bcrypt.hash('admin123', 10);
-  if ((await Admin.countDocuments()) === 0) {
-    await Admin.create({ username: 'admin', password: hashed });
+  const adminUser = process.env.ADMIN_USERNAME || 'admin';
+  const adminPass = process.env.ADMIN_PASSWORD || 'admin123';
+  const hashed = await bcrypt.hash(adminPass, 10);
+  
+  const existingAdmin = await Admin.findOne();
+  if (!existingAdmin) {
+    await Admin.create({ username: adminUser, password: hashed });
     console.log('✅ Admin seeded');
   } else {
-    await Admin.updateOne({ username: 'admin' }, { $set: { password: hashed } });
-    console.log('✅ Admin password forcefully reset to admin123');
+    await Admin.updateOne({ _id: existingAdmin._id }, { $set: { username: adminUser, password: hashed } });
+    console.log('✅ Admin credentials forcefully updated from environment variables');
   }
 
   // Mass Timings
