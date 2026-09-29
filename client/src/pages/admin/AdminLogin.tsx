@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import { getAdminPath } from '../../utils/adminPath';
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -15,7 +16,7 @@ export default function AdminLogin() {
     try {
       const res = await api.post('/auth/login', form);
       login(res.data.token, res.data.username);
-      navigate('/admin');
+      navigate(getAdminPath());
     } catch { setError('Invalid credentials. Please try again.'); }
     finally { setLoading(false); }
   };

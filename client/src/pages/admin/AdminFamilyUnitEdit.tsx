@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../services/api';
 import type { FamilyUnit } from '../../types';
+import { getAdminPath } from '../../utils/adminPath';
 
 type LeaderKey = 'president' | 'secretary' | 'treasurer';
 const LEADER_ROLES: { key: LeaderKey; label: string; icon: string }[] = [
@@ -77,7 +78,7 @@ export default function AdminFamilyUnitEdit() {
     <div>
       {/* ── Top Bar ── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-        <Link to="/admin/family-units" style={{ color: 'var(--gold-400)', textDecoration: 'none', fontSize: '0.875rem' }}>
+        <Link to={getAdminPath("/family-units")} style={{ color: 'var(--gold-400)', textDecoration: 'none', fontSize: '0.875rem' }}>
           ← Back
         </Link>
         <div style={{ flex: 1 }}>

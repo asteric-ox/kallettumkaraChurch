@@ -20,6 +20,9 @@ import hallBookingsRoutes from './routes/hallBookings';
 dotenv.config();
 
 const app = express();
+// Trust proxy is required for Render and Cloudflare to get the actual client IP
+app.set('trust proxy', process.env.TRUSTED_PROXY_CONFIGURATION || true);
+
 const PORT = process.env.PORT || 5000;
 
 // ── Middleware ─────────────────────────────────────────────────────

@@ -32,10 +32,11 @@ import AdminFamilyUnitEdit from './pages/admin/AdminFamilyUnitEdit';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminHallBookings from './pages/admin/AdminHallBookings';
 import AdminPrayerIntentions from './pages/admin/AdminPrayerIntentions';
+import { getAdminPath } from './utils/adminPath';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAdmin } = useAuth();
-  return isAdmin ? <>{children}</> : <Navigate to="/admin/login" replace />;
+  return isAdmin ? <>{children}</> : <Navigate to={getAdminPath('/login')} replace />;
 }
 
 function App() {
@@ -62,8 +63,8 @@ function App() {
         </Route>
 
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+        <Route path={getAdminPath('/login')} element={<AdminLogin />} />
+        <Route path={getAdminPath()} element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route index element={<AdminDashboard />} />
           <Route path="mass-timings" element={<AdminMassTimings />} />
           <Route path="announcements" element={<AdminAnnouncements />} />

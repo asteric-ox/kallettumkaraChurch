@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { getImageUrl } from "../../utils/imageUtils";
 import type { FamilyUnit } from "../../types";
+import { getAdminPath } from "../../utils/adminPath";
 
 export default function AdminFamilyUnits() {
   const [units, setUnits] = useState<FamilyUnit[]>([]);
@@ -39,7 +40,7 @@ export default function AdminFamilyUnits() {
         {units.map(u => {
           const hasLeadership = u.president?.name && u.president.name !== "—";
           return (
-            <Link key={u._id} to={`/admin/family-units/${u._id}`} style={{ textDecoration: "none" }}>
+            <Link key={u._id} to={getAdminPath(`/family-units/${u._id}`)} style={{ textDecoration: "none" }}>
               <div
                 className="glass-card"
                 style={{ padding: "1.5rem", borderRadius: "1.25rem", transition: "all 0.25s", cursor: "pointer", height: "100%", display: "flex", flexDirection: "column", gap: "1rem" }}

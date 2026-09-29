@@ -2,11 +2,12 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Admin from '../models/Admin';
+import { ipRestrictionMiddleware } from '../middleware/ipRestriction';
 
 const router = Router();
 
 // POST /api/auth/login
-router.post('/login', async (req: Request, res: Response): Promise<void> => {
+router.post('/login', ipRestrictionMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body;
     const admin = await Admin.findOne({ username });

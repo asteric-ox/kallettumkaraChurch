@@ -1,6 +1,7 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation, Navigate } from 'react-router-dom';
 import api from '../services/api';
+import { getAdminPath } from '../utils/adminPath';
 
 const navLinks = [
   { to: '/', label: 'Home', key: 'nav.home' },
@@ -79,7 +80,7 @@ export default function Layout() {
   }, [location.pathname]);
 
   // Redirect to /maintenance if enabled (but not from admin or the page itself)
-  if (settingsLoaded && maintenanceMode && location.pathname !== '/maintenance' && !location.pathname.startsWith('/admin')) {
+  if (settingsLoaded && maintenanceMode && location.pathname !== '/maintenance' && !location.pathname.startsWith(getAdminPath())) {
     return <Navigate to="/maintenance" replace />;
   }
 

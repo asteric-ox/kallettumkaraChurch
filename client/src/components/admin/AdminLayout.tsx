@@ -1,22 +1,23 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { getAdminPath } from '../../utils/adminPath';
 
 const navItems = [
-  { to: '/admin', label: 'Dashboard', icon: '📊', end: true },
-  { to: '/admin/mass-timings', label: 'Mass Timings', icon: '⛪' },
-  { to: '/admin/announcements', label: 'Announcements', icon: '📢' },
-  { to: '/admin/parish-council', label: 'Parish Council', icon: '👨‍⚖️' },
-  { to: '/admin/trustees', label: 'Trustees', icon: '🏛️' },
-  { to: '/admin/family-units', label: 'Family Units', icon: '👨‍👩‍👧‍👦' },
-  { to: '/admin/hall-bookings', label: 'Hall Bookings', icon: '📅' },
-  { to: '/admin/prayer-intentions', label: 'Prayer Intentions', icon: '🙏' },
-  { to: '/admin/settings', label: 'Settings', icon: '⚙️' },
+  { to: getAdminPath(), label: 'Dashboard', icon: '📊', end: true },
+  { to: getAdminPath('/mass-timings'), label: 'Mass Timings', icon: '⛪' },
+  { to: getAdminPath('/announcements'), label: 'Announcements', icon: '📢' },
+  { to: getAdminPath('/parish-council'), label: 'Parish Council', icon: '👨‍⚖️' },
+  { to: getAdminPath('/trustees'), label: 'Trustees', icon: '🏛️' },
+  { to: getAdminPath('/family-units'), label: 'Family Units', icon: '👨‍👩‍👧‍👦' },
+  { to: getAdminPath('/hall-bookings'), label: 'Hall Bookings', icon: '📅' },
+  { to: getAdminPath('/prayer-intentions'), label: 'Prayer Intentions', icon: '🙏' },
+  { to: getAdminPath('/settings'), label: 'Settings', icon: '⚙️' },
 ];
 
 export default function AdminLayout() {
   const { logout, username } = useAuth();
   const navigate = useNavigate();
-  const handleLogout = () => { logout(); navigate('/admin/login'); };
+  const handleLogout = () => { logout(); navigate(getAdminPath('/login')); };
   return (
     <div style={{ display:'flex', minHeight:'100vh', background:'var(--church-bg)' }}>
       {/* Sidebar */}
