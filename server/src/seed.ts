@@ -9,10 +9,13 @@ import SiteSettings from './models/SiteSettings';
 
 export const seedDatabase = async (): Promise<void> => {
   // Admin
+  const hashed = await bcrypt.hash('admin123', 10);
   if ((await Admin.countDocuments()) === 0) {
-    const hashed = await bcrypt.hash('admin123', 10);
     await Admin.create({ username: 'admin', password: hashed });
     console.log('✅ Admin seeded');
+  } else {
+    await Admin.updateOne({ username: 'admin' }, { $set: { password: hashed } });
+    console.log('✅ Admin password forcefully reset to admin123');
   }
 
   // Mass Timings
