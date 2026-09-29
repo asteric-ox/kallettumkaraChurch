@@ -17,7 +17,10 @@ export default function AdminLogin() {
       const res = await api.post('/auth/login', form);
       login(res.data.token, res.data.username);
       navigate(getAdminPath());
-    } catch { setError('Invalid credentials. Please try again.'); }
+    } catch (err: any) { 
+      const msg = err.response?.data?.message || 'Invalid credentials. Please try again.';
+      setError(msg); 
+    }
     finally { setLoading(false); }
   };
 
