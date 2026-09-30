@@ -167,7 +167,7 @@ router.patch('/:id/status', authMiddleware, async (req, res) => {
     }
 
     res.json({
-      message: `Booking status updated to ${status}.${emailSent ? ` Email notification sent to ${booking.email}.` : ''}`,
+      message: `Booking status updated to ${status}.${emailSent ? ` Email notification sent to ${booking.email}.` : ' (Email could not be delivered: Render free tier blocks outbound SMTP ports 465/587).' }`,
       booking,
       emailSent,
     });
@@ -196,11 +196,14 @@ router.post('/:id/resend-email', authMiddleware, async (req, res) => {
       await booking.save();
       return res.json({ message: `Email successfully resent to ${booking.email}` });
     } else {
-      return res.status(500).json({ message: 'Failed to send email. Please check server email credentials.' });
+      return res.status(500).json({
+        message: 'Render free tier blocks SMTP ports (465/587). Configure GMAIL_WEBHOOK_URL or an HTTPS email service to send emails.',
+      });
     }
   } catch (error) {
     res.status(500).json({ message: 'Error resending email' });
   }
 });
+
 
 export default router;

@@ -24,5 +24,10 @@ services:
         value: kallettumkarachurch@gmail.com
       - key: EMAIL_PASS
         sync: false
+      - key: GMAIL_WEBHOOK_URL
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+
 
 

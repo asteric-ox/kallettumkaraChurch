@@ -19,13 +19,104 @@ const getTransporter = () => {
   const user = process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com';
   const pass = (process.env.EMAIL_PASS || 'juzj pssa soac orkg').replace(/\s+/g, '');
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // SSL
+    connectionTimeout: 8000, // 8s fail fast to prevent UI hanging
+    greetingTimeout: 8000,
+    socketTimeout: 10000,
     auth: {
       user,
       pass,
     },
   });
 };
+
+/**
+ * Dispatch email via HTTPS Webhook/API (Bypasses Render free-tier SMTP port blocks)
+ */
+const sendViaHttpsRelay = async (payload: { to: string; subject: string; html: string; text: string }): Promise<boolean | null> => {
+  const webhookUrl = process.env.GMAIL_WEBHOOK_URL || process.env.EMAIL_WEBHOOK_URL;
+  if (webhookUrl) {
+    try {
+      console.log('Sending email via HTTPS Google Apps Script / Webhook relay...');
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        console.log('Email successfully dispatched via HTTPS webhook relay!');
+        return true;
+      } else {
+        const text = await response.text();
+        console.warn('Webhook responded with non-200 status:', response.status, text);
+      }
+    } catch (err) {
+      console.error('HTTPS Webhook dispatch error:', err);
+    }
+  }
+
+  // Check for Brevo API Key
+  const brevoKey = process.env.BREVO_API_KEY;
+  if (brevoKey) {
+    try {
+      console.log('Sending email via Brevo HTTPS REST API...');
+      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { name: 'Infant Jesus Church Kallettumkara', email: process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com' },
+          to: [{ email: payload.to }],
+          subject: payload.subject,
+          htmlContent: payload.html,
+          textContent: payload.text,
+        }),
+      });
+      if (response.ok) {
+        console.log('Email successfully sent via Brevo HTTPS API!');
+        return true;
+      }
+    } catch (err) {
+      console.error('Brevo API dispatch error:', err);
+    }
+  }
+
+  // Check for Resend API Key
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    try {
+      console.log('Sending email via Resend HTTPS REST API...');
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Infant Jesus Church <onboarding@resend.dev>',
+          to: payload.to,
+          subject: payload.subject,
+          html: payload.html,
+          text: payload.text,
+        }),
+      });
+      if (response.ok) {
+        console.log('Email successfully sent via Resend API!');
+        return true;
+      }
+    } catch (err) {
+      console.error('Resend API dispatch error:', err);
+    }
+  }
+
+  return null; // No HTTPS relay configured
+};
+
 
 const formatDate = (date: Date | string): string => {
   const d = new Date(date);
@@ -50,8 +141,8 @@ export const sendBookingApprovalEmail = async (booking: HallBookingDetails) => {
     return false;
   }
 
-  const transporter = getTransporter();
   const formattedDate = formatDate(booking.booking_date);
+
   const formattedAmount = formatAmount(booking.amount);
   const bookingRef = booking._id ? String(booking._id).slice(-8).toUpperCase() : 'PENDING';
 
@@ -195,18 +286,36 @@ Please visit the church office to pay the hall rent of ${formattedAmount}.
 Church Office: +91 79091 51122 | kallettumkarachurch@gmail.com
   `;
 
+  const subject = `Booking Confirmed: Infant Jesus Church Hall - ${booking.event_type} (${formattedDate})`;
+
+  // 1. Try HTTPS Relay first (Bypasses Render free-tier outbound port blocks)
+  const relayResult = await sendViaHttpsRelay({
+    to: booking.email,
+    subject,
+    html,
+    text,
+  });
+  if (relayResult === true) {
+    return true;
+  }
+
+  // 2. Fallback to Direct SMTP
+  const transporter = getTransporter();
   try {
     const info = await transporter.sendMail({
       from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
       to: booking.email,
-      subject: `Booking Confirmed: Infant Jesus Church Hall - ${booking.event_type} (${formattedDate})`,
+      subject,
       text,
       html,
     });
-    console.log('Approval email sent successfully:', info.messageId);
+    console.log('Approval email sent successfully via SMTP:', info.messageId);
     return true;
-  } catch (error) {
-    console.error('Error sending approval email:', error);
+  } catch (error: any) {
+    console.error('Error sending approval email via SMTP:', error.message || error);
+    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout') || error.code === 'ECONNECTION') {
+      console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+    }
     return false;
   }
 };
@@ -220,7 +329,6 @@ export const sendBookingRejectionEmail = async (booking: HallBookingDetails) => 
     return false;
   }
 
-  const transporter = getTransporter();
   const formattedDate = formatDate(booking.booking_date);
   const formattedAmount = formatAmount(booking.amount);
   const bookingRef = booking._id ? String(booking._id).slice(-8).toUpperCase() : 'PENDING';
@@ -364,18 +472,37 @@ You are welcome to select another available date on our website calendar or cont
 Church Office: +91 79091 51122 | kallettumkarachurch@gmail.com
   `;
 
+  const subject = `Booking Request Update: Infant Jesus Church Hall - ${booking.event_type}`;
+
+  // 1. Try HTTPS Relay first
+  const relayResult = await sendViaHttpsRelay({
+    to: booking.email,
+    subject,
+    html,
+    text,
+  });
+  if (relayResult === true) {
+    return true;
+  }
+
+  // 2. Fallback to Direct SMTP
+  const transporter = getTransporter();
   try {
     const info = await transporter.sendMail({
       from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
       to: booking.email,
-      subject: `Booking Request Update: Infant Jesus Church Hall - ${booking.event_type}`,
+      subject,
       text,
       html,
     });
-    console.log('Rejection email sent successfully:', info.messageId);
+    console.log('Rejection email sent successfully via SMTP:', info.messageId);
     return true;
-  } catch (error) {
-    console.error('Error sending rejection email:', error);
+  } catch (error: any) {
+    console.error('Error sending rejection email via SMTP:', error.message || error);
+    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout') || error.code === 'ECONNECTION') {
+      console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+    }
     return false;
   }
 };
+
