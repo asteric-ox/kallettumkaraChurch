@@ -33,5 +33,8 @@ Thumbs.db
 
 # Misc
 .cache/
+scratch/
+test-*.js
 # server/uploads/*
 # !server/uploads/.gitkeep
+

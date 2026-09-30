@@ -20,4 +20,9 @@ services:
       - key: CLIENT_URL
         # Set this to your Cloudflare Pages URL e.g. https://your-project.pages.dev
         sync: false
+      - key: EMAIL_USER
+        value: kallettumkarachurch@gmail.com
+      - key: EMAIL_PASS
+        sync: false
+
 
