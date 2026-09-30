@@ -15,13 +15,13 @@ export interface HallBookingDetails {
   admin_remarks?: string;
 }
 
-const getTransporter = () => {
+const getTransporter = (port: number = 465, secure: boolean = true) => {
   const user = process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com';
   const pass = (process.env.EMAIL_PASS || 'juzj pssa soac orkg').replace(/\s+/g, '');
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // SSL
+    port,
+    secure,
     connectionTimeout: 8000, // 8s fail fast to prevent UI hanging
     greetingTimeout: 8000,
     socketTimeout: 10000,
@@ -42,10 +42,11 @@ const sendViaHttpsRelay = async (payload: { to: string; subject: string; html: s
       console.log('Sending email via HTTPS Google Apps Script / Webhook relay...');
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload),
+        redirect: 'follow',
       });
-      if (response.ok) {
+      if (response.ok || response.status === 200 || response.status === 302) {
         console.log('Email successfully dispatched via HTTPS webhook relay!');
         return true;
       } else {
@@ -299,25 +300,26 @@ Church Office: +91 79091 51122 | kallettumkarachurch@gmail.com
     return true;
   }
 
-  // 2. Fallback to Direct SMTP
-  const transporter = getTransporter();
-  try {
-    const info = await transporter.sendMail({
-      from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
-      to: booking.email,
-      subject,
-      text,
-      html,
-    });
-    console.log('Approval email sent successfully via SMTP:', info.messageId);
-    return true;
-  } catch (error: any) {
-    console.error('Error sending approval email via SMTP:', error.message || error);
-    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout') || error.code === 'ECONNECTION') {
-      console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+  // 2. Fallback to Direct SMTP (Port 465 SSL, then Port 587 TLS)
+  for (const { port, secure } of [{ port: 465, secure: true }, { port: 587, secure: false }]) {
+    try {
+      const transporter = getTransporter(port, secure);
+      const info = await transporter.sendMail({
+        from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
+        to: booking.email,
+        subject,
+        text,
+        html,
+      });
+      console.log(`Approval email sent successfully via SMTP (port ${port}):`, info.messageId);
+      return true;
+    } catch (error: any) {
+      console.warn(`SMTP port ${port} attempt failed:`, error.message || error);
     }
-    return false;
   }
+
+  console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+  return false;
 };
 
 /**
@@ -485,24 +487,25 @@ Church Office: +91 79091 51122 | kallettumkarachurch@gmail.com
     return true;
   }
 
-  // 2. Fallback to Direct SMTP
-  const transporter = getTransporter();
-  try {
-    const info = await transporter.sendMail({
-      from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
-      to: booking.email,
-      subject,
-      text,
-      html,
-    });
-    console.log('Rejection email sent successfully via SMTP:', info.messageId);
-    return true;
-  } catch (error: any) {
-    console.error('Error sending rejection email via SMTP:', error.message || error);
-    if (error.code === 'ETIMEDOUT' || error.message?.includes('timeout') || error.code === 'ECONNECTION') {
-      console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+  // 2. Fallback to Direct SMTP (Port 465 SSL, then Port 587 TLS)
+  for (const { port, secure } of [{ port: 465, secure: true }, { port: 587, secure: false }]) {
+    try {
+      const transporter = getTransporter(port, secure);
+      const info = await transporter.sendMail({
+        from: `"Infant Jesus Church Kallettumkara" <${process.env.EMAIL_USER || 'kallettumkarachurch@gmail.com'}>`,
+        to: booking.email,
+        subject,
+        text,
+        html,
+      });
+      console.log(`Rejection email sent successfully via SMTP (port ${port}):`, info.messageId);
+      return true;
+    } catch (error: any) {
+      console.warn(`SMTP port ${port} attempt failed:`, error.message || error);
     }
-    return false;
   }
+
+  console.warn('NOTE: Render free-tier blocks outbound SMTP ports 25, 465, and 587. To send emails from Render without timeouts, add GMAIL_WEBHOOK_URL or an API key.');
+  return false;
 };
 
